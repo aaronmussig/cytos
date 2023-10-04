@@ -7,7 +7,7 @@ use clap::Args;
 use log::{info, warn};
 
 use crate::model::error::{CytosError, CytosResult};
-use crate::model::fasta::FastaFile;
+use crate::model::fasta::fasta_file::FastaFile;
 
 #[derive(Args)]
 pub struct ConcatCommand {
@@ -19,7 +19,7 @@ pub struct ConcatCommand {
 
     /// Missing character separator.
     #[clap(long, default_value = "-")]
-    pub gap: u8,
+    pub gap: String,
 }
 
 fn read_fasta_files(input: &Vec<PathBuf>) -> CytosResult<HashMap<&PathBuf, FastaFile>> {
@@ -51,6 +51,15 @@ fn get_total_size_from_fasta_files(fasta_files: &HashMap<&PathBuf, FastaFile>) -
 }
 
 pub fn concat_msa(args: &ConcatCommand) -> CytosResult<()> {
+
+    // Parse the separation character
+    let sep_char = {
+        let str_vec = args.gap.as_bytes();
+        if str_vec.len() != 1 {
+            return Err(CytosError::InvalidArgument("The gap character must be a single character.".to_string()));
+        }
+        str_vec[0]
+    };
 
     // Read the FASTA files
     let fasta_files = read_fasta_files(&args.input)?;
@@ -84,7 +93,7 @@ pub fn concat_msa(args: &ConcatCommand) -> CytosResult<()> {
                 seq_slice.to_vec()
             } else {
                 // Add gaps
-                vec![args.gap; fasta.size]
+                vec![sep_char; fasta.size]
             };
 
             // Add the sequence to the output
