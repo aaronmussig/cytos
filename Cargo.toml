@@ -1,0 +1,23 @@
+[package]
+name = "cytos"
+version = "0.1.0"
+edition = "2021"
+authors = ["Aaron Mussig <aaronmussig@gmail.com>"]
+description = "A collection of frequently used Bioinformatics scripts/tasks written in Rust."
+readme = "README.md"
+repository = "https://github.com/aaronmussig/cytos"
+license = "GPL-3.0"
+rust-version = "1.70.0"
+
+[dependencies]
+bio = "1.4.0"
+chrono = "0.4.31"
+clap = { version = "4.4.6", features = ["derive"] }
+env_logger = "0.10.0"
+log = "0.4.20"
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
+strip = true
