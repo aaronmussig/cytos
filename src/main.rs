@@ -45,11 +45,9 @@ fn main() {
         .filter(None, LevelFilter::Info)
         .init();
 
-    // Output the program version
-    info!("cytos v{}", VERSION.unwrap_or("unknown"));
-
     // Create the CLI and parse the arguments
     let cli = Cli::parse();
+    info!("cytos v{}", VERSION.unwrap_or("unknown"));
     let result = match cli.command {
 
         // msa
