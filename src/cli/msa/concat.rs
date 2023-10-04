@@ -11,11 +11,15 @@ use crate::model::fasta::FastaFile;
 
 #[derive(Args)]
 pub struct ConcatCommand {
-    /// Write the aligned FASTA file to this path.
+    /// Write the concatenated FASTA file to this path.
     pub output: PathBuf,
 
     /// Space-separated list of FASTA files to concatenate (this will form the order).
     pub input: Vec<PathBuf>,
+
+    /// Missing character separator.
+    #[clap(long, default_value = "-")]
+    pub gap: u8,
 }
 
 fn read_fasta_files(input: &Vec<PathBuf>) -> CytosResult<HashMap<&PathBuf, FastaFile>> {
@@ -80,7 +84,7 @@ pub fn concat_msa(args: &ConcatCommand) -> CytosResult<()> {
                 seq_slice.to_vec()
             } else {
                 // Add gaps
-                vec![b'-'; fasta.size]
+                vec![args.gap; fasta.size]
             };
 
             // Add the sequence to the output
