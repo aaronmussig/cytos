@@ -68,18 +68,3 @@ impl<'a> FastaFile<'a> {
         })
     }
 }
-
-
-#[test]
-fn test() {
-    let path = "/tmp/foo.fa";
-    let path = path::PathBuf::from(path);
-    let fasta = FastaFile::load(&path).unwrap();
-
-    // iterate over all gid_to_seq
-    for (gid, seq) in fasta.gid_to_seq {
-        println!("address of {}: {:p}", gid, &seq);
-    }
-    let x = 1;
-}
-
