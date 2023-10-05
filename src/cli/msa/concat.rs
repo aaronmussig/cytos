@@ -43,7 +43,9 @@ fn get_ids_from_fasta_files<'a>(fasta_files: &'a HashMap<&PathBuf, FastaFile>) -
             ids.insert(id);
         }
     }
-    ids.into_iter().collect()
+    let mut ids_sorted = ids.into_iter().collect::<Vec<&str>>();
+    ids_sorted.sort();
+    ids_sorted
 }
 
 fn get_total_size_from_fasta_files(fasta_files: &HashMap<&PathBuf, FastaFile>) -> usize {
@@ -78,11 +80,13 @@ pub fn concat_msa(args: &ConcatCommand) -> CytosResult<()> {
     }
 
     // Iterate over the FASTA files and add the sequences to the output
-    for fasta in fasta_files.values() {
+    for fasta_path in &args.input {
+        let fasta = fasta_files.get(fasta_path).expect("Internal error");
 
         // Iterate over the ids
         for id in &ids {
             let id = *id;
+            warn!("{}", id);
 
             // Get the sequence
             let opt_record = fasta.gid_to_seq.get(id);
