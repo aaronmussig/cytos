@@ -45,9 +45,11 @@ jobs:
           cache: npm
           node-version: 18
       - env:
-          VERSION: ${{ needs.semantic_release_next_version.outputs.version }} || ${{ needs.semantic_release_next_version.outputs.previous }}
-          working-directory: ./docs
+          V_VERSION: ${{ needs.semantic_release_next_version.outputs.version }}
+          V_PREVIOUS: ${{ needs.semantic_release_next_version.outputs.previous }}
         run: |
+          cd ./docs
+          export VERSION="${V_VERSION:-$V_PREVIOUS}"
           echo "$VERSION"
           npm install
           npm run generate
