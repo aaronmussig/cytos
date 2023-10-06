@@ -48,6 +48,7 @@ jobs:
           VERSION: ${{ needs.semantic_release_next_version.outputs.version }} || ${{ needs.semantic_release_next_version.outputs.previous }}
           working-directory: ./docs
         run: |
+          pwd
           echo "$VERSION"
           npm install
           npx nuxi generate
