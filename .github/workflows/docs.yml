@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - main
-#    paths:
-#      - 'docs/**'
-#  workflow_dispatch:
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
 
 jobs:
 
@@ -50,8 +50,8 @@ jobs:
     needs: semantic_release_dry_run
     runs-on: ubuntu-latest
     env:
-        V_VERSION: ${{ needs.semantic_release_dry_run.outputs.version }}
-        V_PREVIOUS: ${{ needs.semantic_release_dry_run.outputs.previous }}
+      V_VERSION: ${{ needs.semantic_release_dry_run.outputs.version }}
+      V_PREVIOUS: ${{ needs.semantic_release_dry_run.outputs.previous }}
     steps:
       # Checkout the repository
       - uses: actions/checkout@v4
@@ -78,36 +78,11 @@ jobs:
           cd ./docs
           export VERSION="${V_VERSION:-$V_PREVIOUS}"
           echo "$VERSION"
-#          npm install
-#          npm run generate
-#
-#      # Deploy to the gh-pages branch
-#      - name: Deploy 🚀
-#        uses: JamesIves/github-pages-deploy-action@v4
-#        with:
-#          folder: ./docs/.output/public
+          npm install
+          npm run generate
 
-#  build_docs:
-#    name: Build documentation
-#    needs: semantic_release_dry_run
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - uses: actions/setup-node@v3
-#        with:
-#          cache: npm
-#          node-version: 18
-#      - env:
-#          V_VERSION: ${{ needs.semantic_release_dry_run.outputs.version }}
-#          V_PREVIOUS: ${{ needs.semantic_release_dry_run.outputs.previous }}
-#        run: |
-#          cd ./docs
-#          export VERSION="${V_VERSION:-$V_PREVIOUS}"
-#          echo "$VERSION"
-#          npm install
-#          npm run generate
-#      - name: Deploy 🚀
-#        uses: JamesIves/github-pages-deploy-action@v4
-#        with:
-#          folder: ./docs/.output/public
-#
+      # Deploy to the gh-pages branch
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./docs/.output/public

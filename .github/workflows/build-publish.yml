@@ -13,12 +13,19 @@ on:
 jobs:
 
   # Determine the next version from commits (if any)
-  semantic_release_next_version:
+  semantic_release_dry_run:
     name: Semantic Release (dry run)
     runs-on: ubuntu-latest
     steps:
       # Checkout the repository
       - uses: actions/checkout@v4
+
+      # Maybe load the cache
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-semantic-release-${{ hashFiles('package-lock.json') }}
 
       # Install node.js (npm)
       - uses: actions/setup-node@v3
@@ -35,15 +42,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Save the modified files for future steps
-      - uses: actions/upload-artifact@v3
-        with:
-          name: semantic-release
-          path: |
-            Cargo.toml
-          retention-days: 1
     outputs:
       version: ${{ steps.semantic_release.outputs.version }}
+      previous: ${{ steps.semantic_release.outputs.previous }}
 
   test_rust:
     name: Build Rust
