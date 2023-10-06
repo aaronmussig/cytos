@@ -9,7 +9,8 @@
     [
       "@semantic-release/exec",
       {
-        "verifyReleaseCmd": "./version.sh ${nextRelease.version} && echo version=${nextRelease.version} >> $GITHUB_OUTPUT && echo previous=${lastRelease.version} >> $GITHUB_OUTPUT"
+        "analyzeCommits": "echo previous=${lastRelease.version} >> $GITHUB_OUTPUT",
+        "verifyReleaseCmd": "./version.sh ${nextRelease.version} && echo version=${nextRelease.version} >> $GITHUB_OUTPUT"
       }
     ],
     [

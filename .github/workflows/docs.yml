@@ -65,14 +65,14 @@ jobs:
           echo "ok"
           export VERSION="${V_VERSION:-$V_PREVIOUS}"
           echo "$VERSION"
-          npm install
-          npm run generate
-
-      # Deploy to the gh-pages branch
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: ./docs/.output/public
+#          npm install
+#          npm run generate
+#
+#      # Deploy to the gh-pages branch
+#      - name: Deploy 🚀
+#        uses: JamesIves/github-pages-deploy-action@v4
+#        with:
+#          folder: ./docs/.output/public
 
 #  build_docs:
 #    name: Build documentation
