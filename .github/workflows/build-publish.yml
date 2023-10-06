@@ -4,20 +4,32 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+  workflow_dispatch:
 
 jobs:
 
+  # Determine the next version from commits (if any)
   semantic_release_next_version:
-    name: Next version
+    name: Semantic Release (dry run)
     runs-on: ubuntu-latest
     steps:
-      # Checkout and run semantic release to get the next version
+      # Checkout the repository
       - uses: actions/checkout@v4
+
+      # Install node.js (npm)
       - uses: actions/setup-node@v3
         with:
           cache: npm
           node-version: 18
+
+      # Install packages
       - run: npm install
+
+      # Run semantic release to determine the next version
       - run: npx semantic-release --dry-run
         id: semantic_release
         env:
@@ -33,30 +45,6 @@ jobs:
     outputs:
       version: ${{ steps.semantic_release.outputs.version }}
       previous: ${{ steps.semantic_release.outputs.previous }}
-
-  build_docs:
-    name: Build documentation
-    needs: semantic_release_next_version
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          cache: npm
-          node-version: 18
-      - env:
-          V_VERSION: ${{ needs.semantic_release_next_version.outputs.version }}
-          V_PREVIOUS: ${{ needs.semantic_release_next_version.outputs.previous }}
-        run: |
-          cd ./docs
-          export VERSION="${V_VERSION:-$V_PREVIOUS}"
-          echo "$VERSION"
-          npm install
-          npm run generate
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: ./docs/.output/public
 
   test_rust:
     name: Build Rust
