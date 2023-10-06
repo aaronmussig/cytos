@@ -15,9 +15,6 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
-    // Enqueue a batch of commands to be run.
-    //#[command(arg_required_else_help = true)]
-
     /// Actions to perform on multiple sequence alignments.
     Msa(MsaArgs),
 

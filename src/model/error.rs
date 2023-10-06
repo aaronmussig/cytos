@@ -5,6 +5,7 @@ pub enum CytosError {
     DuplicateFastaId(String),
     EmptyFastaFile(String),
     MsaLengthMismatch(String),
+    InvalidArgument(String),
 }
 
 impl std::fmt::Display for CytosError {
@@ -15,6 +16,7 @@ impl std::fmt::Display for CytosError {
             Self::DuplicateFastaId(e) => write!(f, "Duplicate FASTA ID: {}", e),
             Self::EmptyFastaFile(e) => write!(f, "Empty FASTA file: {}", e),
             Self::MsaLengthMismatch(e) => write!(f, "MSA length mismatch: {}", e),
+            Self::InvalidArgument(e) => write!(f, "Invalid argument: {}", e),
         }
     }
 }
@@ -27,6 +29,7 @@ impl std::error::Error for CytosError {
             Self::DuplicateFastaId(_) => None,
             Self::EmptyFastaFile(_) => None,
             Self::MsaLengthMismatch(_) => None,
+            Self::InvalidArgument(_) => None,
         }
     }
 }
