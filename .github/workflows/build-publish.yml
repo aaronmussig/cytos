@@ -44,7 +44,6 @@ jobs:
           retention-days: 1
     outputs:
       version: ${{ steps.semantic_release.outputs.version }}
-      previous: ${{ steps.semantic_release.outputs.previous }}
 
   test_rust:
     name: Build Rust

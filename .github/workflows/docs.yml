@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'docs/**'
-  workflow_dispatch:
+#    paths:
+#      - 'docs/**'
+#  workflow_dispatch:
 
 jobs:
 
@@ -17,6 +17,13 @@ jobs:
     steps:
       # Checkout the repository
       - uses: actions/checkout@v4
+
+      # Maybe load the cache
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-semantic-release-${{ hashFiles('package-lock.json') }}
 
       # Install node.js (npm)
       - uses: actions/setup-node@v3
@@ -48,6 +55,16 @@ jobs:
     steps:
       # Checkout the repository
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            docs
+
+      # Maybe load the cache
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-nuxt-${{ hashFiles('./docs/package-lock.json') }}
 
       # Install node.js (npm)
       - uses: actions/setup-node@v3
@@ -59,10 +76,6 @@ jobs:
       - name: Build documentation
         run: |
           cd ./docs
-          echo "versions"
-          echo $V_VERSION
-          echo $V_PREVIOUS
-          echo "ok"
           export VERSION="${V_VERSION:-$V_PREVIOUS}"
           echo "$VERSION"
 #          npm install
