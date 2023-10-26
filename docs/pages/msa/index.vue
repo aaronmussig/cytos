@@ -24,6 +24,13 @@
         </CodeBlock>
       </nuxt-link>
 
+      <nuxt-link to="/msa/bootstrap">
+        <CodeBlock class="mt-3">
+          <b>cytos msa bootstrap</b> [OPTIONS] &lt;INPUT&gt; &lt;OUTPUT&gt;<br><br>
+          <span class="text-xs"><i>Bootstrap a multiple sequence alignment.</i></span>
+        </CodeBlock>
+      </nuxt-link>
+
     </div>
 
 

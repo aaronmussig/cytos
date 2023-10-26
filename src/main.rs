@@ -9,6 +9,7 @@ use log::{error, info, Level};
 use log::LevelFilter;
 
 use crate::cli::{Cli, Commands};
+use crate::cli::msa::bootstrap::run_bootstrap_msa;
 use crate::cli::msa::concat::concat_msa;
 use crate::cli::msa::MsaCommands;
 use crate::config::VERSION;
@@ -57,6 +58,11 @@ fn main() {
                 // msa concat
                 MsaCommands::Concat(cmd) => {
                     concat_msa(cmd)
+                }
+
+                // msa bootstrap
+                MsaCommands::Bootstrap(cmd) => {
+                    run_bootstrap_msa(cmd)
                 }
             }
         }
