@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/build-publish.yml'
       - 'src/**'
       - 'Cargo.toml'
       - 'Cargo.lock'
@@ -19,13 +20,6 @@ jobs:
     steps:
       # Checkout the repository
       - uses: actions/checkout@v4
-
-      # Maybe load the cache
-      - name: Cache npm
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-semantic-release-${{ hashFiles('package-lock.json') }}
 
       # Install node.js (npm)
       - uses: actions/setup-node@v3
@@ -42,32 +36,37 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    # Output the new version and previous version
     outputs:
       version: ${{ steps.semantic_release.outputs.version }}
       previous: ${{ steps.semantic_release.outputs.previous }}
 
+  # Build & test if a new version is available
   test_rust:
     name: Build Rust
-    needs: semantic_release_next_version
-    if: needs.semantic_release_next_version.outputs.version != ''
+    needs: semantic_release_dry_run
+    if: needs.semantic_release_dry_run.outputs.version != ''
     runs-on: ubuntu-latest
+    env:
+      V_VERSION: ${{ needs.semantic_release_dry_run.outputs.version }}
+      V_PREVIOUS: ${{ needs.semantic_release_dry_run.outputs.previous }}
     steps:
+      # Checkout the repository
       - uses: actions/checkout@v4
 
-      # Download the new version
-      - uses: actions/download-artifact@v3
-        with:
-          name: semantic-release
+      # Run the versioning script to update the Cargo.toml file
+      - run: version.sh $V_VERSION
 
       # Run all tests
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test --release --all-features
 
-      # Save the modified Cargo.lock file with the updated version
+      # Save the modified Cargo.toml / Cargo.lock file with the updated version
       - uses: actions/upload-artifact@v3
         with:
-          name: semantic-release-cargo-lock
+          name: semantic-release-cargo
           path: |
+            Cargo.toml
             Cargo.lock
           retention-days: 1
 
@@ -78,10 +77,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Download the modified lock file, the toml will be automatically updated by semantic release
+      # Download the modified Cargo files
       - uses: actions/download-artifact@v3
         with:
-          name: semantic-release-cargo-lock
+          name: semantic-release-cargo
 
       # Run and publish
       - uses: actions/setup-node@v3
