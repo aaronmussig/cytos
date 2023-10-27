@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/aaronmussig/cytos/compare/v1.1.0...v1.2.0) (2023-10-27)
+
+
+### Features
+
+* **msa bootstrap:** Bootstrap a multiple sequence alignment. ([37b5335](https://github.com/aaronmussig/cytos/commit/37b5335ae49f72e01c59d0a8687eff634dd10bbc))
+
 # [1.1.0](https://github.com/aaronmussig/cytos/compare/v1.0.0...v1.1.0) (2023-10-06)
 
 
