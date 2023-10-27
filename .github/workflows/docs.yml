@@ -57,7 +57,7 @@ jobs:
       # Install node.js (npm)
       - uses: actions/setup-node@v3
         with:
-          cache: npm-docs
+          cache: npm
           node-version: 18
 
       # Build the documentation

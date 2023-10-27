@@ -55,7 +55,7 @@ jobs:
       - uses: actions/checkout@v4
 
       # Run the versioning script to update the Cargo.toml file
-      - run: version.sh $V_VERSION
+      - run: sed -i "s/^version = .*$/version = \"$V_VERSION\"/" Cargo.toml
 
       # Run all tests
       - uses: dtolnay/rust-toolchain@stable
