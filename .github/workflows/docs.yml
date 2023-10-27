@@ -50,9 +50,6 @@ jobs:
     steps:
       # Checkout the repository
       - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            docs
 
       # Install node.js (npm)
       - uses: actions/setup-node@v3
