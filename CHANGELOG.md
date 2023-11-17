@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/aaronmussig/cytos/compare/v1.2.0...v1.2.1) (2023-11-17)
+
+
+### Bug Fixes
+
+* **bootstrap:** Fix a bug where subsampling would not occur correctly. ([bacb13b](https://github.com/aaronmussig/cytos/commit/bacb13bb126ebc8e62528b6e683873f99a0f05c5))
+
 # [1.2.0](https://github.com/aaronmussig/cytos/compare/v1.1.0...v1.2.0) (2023-10-27)
 
 
