@@ -29,13 +29,20 @@ pub struct BootstrapCommand {
 }
 
 
-fn subsample_sequence(seq: &[u8], rng: &mut StdRng) -> Vec<u8> {
-    let n_chars = seq.len();
-    let between = Uniform::from(0..n_chars);
-    let mut out: Vec<u8> = Vec::with_capacity(n_chars);
-    for _ in 0..n_chars {
+fn subsample_sequence(seq: &[u8], columns: &[usize]) -> Vec<u8> {
+    let mut out: Vec<u8> = Vec::with_capacity(seq.len());
+    for col in columns {
+        out.push(seq[*col]);
+    }
+    out
+}
+
+fn generate_columns(n_columns: usize, rng: &mut StdRng) -> Vec<usize> {
+    let between = Uniform::from(0..n_columns);
+    let mut out = Vec::with_capacity(n_columns);
+    for _ in 0..n_columns {
         let i = between.sample(rng);
-        out.push(seq[i]);
+        out.push(i);
     }
     out
 }
@@ -56,15 +63,25 @@ pub fn run_bootstrap_msa(args: &BootstrapCommand) -> CytosResult<()> {
         Some(s) => StdRng::seed_from_u64(s),
         None => StdRng::from_entropy(),
     };
+    
+    // Get the number of columns in the MSA
+    let n_columns = fasta.size;
 
     // Create the bootstrap replicates
     for i in 0..args.replicates {
+        
+        // Generate the columns
+        let columns = generate_columns(n_columns, &mut rng);
+        
+        // Create the output file
         let output_path = args.output.join(format!("{}_{}.{}", prefix, i, ext));
         let mut output_file = File::create(&output_path).map_err(CytosError::IoError)?;
         let mut writer = fasta::Writer::new(&mut output_file);
+
+        // Select the columns from each sequence
         for id in &fasta.gids {
             let seq = fasta.gid_to_seq.get(id).unwrap();
-            let subsampled_seq = subsample_sequence(seq.seq(), &mut rng);
+            let subsampled_seq = subsample_sequence(seq.seq(), &columns);
             let new_seq = fasta::Record::with_attrs(id, seq.desc(), &subsampled_seq);
             writer.write_record(&new_seq).map_err(CytosError::IoError)?;
         }
